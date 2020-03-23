@@ -1,0 +1,47 @@
+
+Ninja.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+spinjump
+  rotate: false
+  xy: 0, 0
+  size: 352, 64
+  orig: 352, 64
+  offset: 0, 0
+  index: -1
+run
+  rotate: false
+  xy: 352, 0
+  size: 192, 64
+  orig: 192, 64
+  offset: 0, 0
+  index: -1
+walk
+  rotate: false
+  xy: 544, 0
+  size: 192, 64
+  orig: 192, 64
+  offset: 0, 0
+  index: -1
+jump
+  rotate: false
+  xy: 736, 0
+  size: 96, 64
+  orig: 96, 64
+  offset: 0, 0
+  index: -1
+fall
+  rotate: false
+  xy: 832, 16
+  size: 93, 48
+  orig: 93, 48
+  offset: 0, 0
+  index: -1
+idle
+  rotate: false
+  xy: 925, 0
+  size: 32, 64
+  orig: 32, 64
+  offset: 0, 0
+  index: -1
