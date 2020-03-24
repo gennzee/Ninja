@@ -14,6 +14,7 @@ import com.xa.MainGame;
 import com.xa.Maps.MapLoader;
 import com.xa.Maps.MyContact;
 import com.xa.Object.Player;
+import com.xa.Skills.SkillObject;
 
 public class GamePlay implements Screen {
 
@@ -36,6 +37,7 @@ public class GamePlay implements Screen {
     private TextureAtlas textureAtlas;
     //private HUD hud;
     float x, y =0;
+    private SkillObject skillObject;
 
     public GamePlay(MainGame game){
 
@@ -58,6 +60,7 @@ public class GamePlay implements Screen {
 
         gameCam.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
         miniGameCam.position.set(miniGameViewport.getWorldWidth() / 2, (miniGameViewport.getWorldHeight() / -2f) + getScaleWithPPM(miniGameViewport.getWorldHeight()*10), 0);
+        skillObject = new SkillObject(game.batch);
 
     }
 
@@ -78,6 +81,7 @@ public class GamePlay implements Screen {
         mapLoader.getWorld().step(1/60f, 10,2);
         miniMapLoader.getWorld().step(1/60f, 10,2);
         player.update(delta);
+        skillObject.update(delta, player);
 
         //moving mini map to anywhere on screen
 //            if(Gdx.input.getX() > miniGameCam.position.x &&  Gdx.input.getX() <= miniGameCam.position.x + miniGameCam.viewportWidth
@@ -129,6 +133,7 @@ public class GamePlay implements Screen {
 
         //update joystick
         arrowKeys.handleInputForJoystick(delta);
+
     }
 
     @Override
@@ -155,11 +160,13 @@ public class GamePlay implements Screen {
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        skillObject.draw(game.batch);
         game.batch.end();
 
         game.batch.setProjectionMatrix(miniGameCam.combined);
         game.batch.begin();
         player.draw(game.batch);
+        skillObject.draw(game.batch);
         game.batch.end();
 
         //draw joystick

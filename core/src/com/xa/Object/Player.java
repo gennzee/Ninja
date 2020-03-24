@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
-import com.xa.MainGame;
 import com.xa.PlayScreen.GamePlay;
 
 public class Player extends Sprite {
@@ -24,11 +23,11 @@ public class Player extends Sprite {
     private TextureAtlas textureAtlas;
     private State currentState;
     private State previousState;
-    private Animation playerRunning;
-    private Animation playerWalking;
-    private Animation playerJumping;
-    private Animation playerStanding;
-    private Animation playerFalling;
+    private Animation<TextureRegion> playerRunning;
+    private Animation<TextureRegion> playerWalking;
+    private Animation<TextureRegion> playerJumping;
+    private Animation<TextureRegion> playerStanding;
+    private Animation<TextureRegion> playerFalling;
     private boolean isRunningRight;
     private float stateTimer;
     private Sprite testSprite;
@@ -49,7 +48,7 @@ public class Player extends Sprite {
         for(int i = Math.round(925f/32f) ;i<Math.round((32f/32f)+(925f/32f));i++){
             framesArray.add(new TextureRegion(getTexture(),i*32, 0*64, 32, 64));
         }
-        playerStanding = new Animation(0.1f, framesArray);
+        playerStanding = new Animation<>(0.1f, framesArray);
         framesArray.clear();
         //getFrames(framesArray, playerStanding, 1, 27, 1);
 
@@ -57,28 +56,28 @@ public class Player extends Sprite {
         for(int i = Math.round(544f/32f) ;i<((192f/32f)+(544f/32f));i++){
             framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 64));
         }
-        playerWalking = new Animation(0.1f, framesArray);
+        playerWalking = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
         //running animation
         for(int i = Math.round(352f/32f) ;i<((192f/32f)+(352f/32f));i++){
             framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 64));
         }
-        playerRunning = new Animation(0.1f, framesArray);
+        playerRunning = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
         //jumping animation
         for(int i = Math.round(736f/32f) ;i<Math.round((96f/32f)+(736f/32f));i++){
             framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 64));
         }
-        playerJumping = new Animation(0.1f, framesArray);
+        playerJumping = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
         //falling animation
         for(int i = Math.round(832f/32f) ;i<Math.round((93f/32f)+(832f/32f));i++){
             framesArray.add(new TextureRegion(getTexture(), i*32, 0*48, 32, 64));
         }
-        playerFalling = new Animation(0.1f, framesArray);
+        playerFalling = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
 
@@ -112,23 +111,24 @@ public class Player extends Sprite {
         TextureRegion region;
         switch (currentState){
             case JUMPING:
-                region = (TextureRegion) playerJumping.getKeyFrame(stateTimer);
+                region = playerJumping.getKeyFrame(stateTimer);
                 break;
             case WALKING:
-                region = (TextureRegion) playerWalking.getKeyFrame(stateTimer);
+                region = playerWalking.getKeyFrame(stateTimer);
                 break;
             case RUNNING:
-                region = (TextureRegion) playerRunning.getKeyFrame(stateTimer, true);
+                region = playerRunning.getKeyFrame(stateTimer, true);
                 break;
             case FALLING:
-                region = (TextureRegion) playerFalling.getKeyFrame(stateTimer, true);
+                region = playerFalling.getKeyFrame(stateTimer, true);
                 break;
             case STANDING:
-                region = (TextureRegion) playerStanding.getKeyFrame(stateTimer, true);
+                region = playerStanding.getKeyFrame(stateTimer, true);
                 break;
             default:
                 region = playerIdle;
                 break;
+
         }
 
         if((body.getLinearVelocity().x < 0 || !isRunningRight) && !region.isFlipX()){
@@ -144,7 +144,7 @@ public class Player extends Sprite {
         return region;
     }
 
-    public State getState(){
+    private State getState(){
         if(body.getLinearVelocity().y > 0 || (body.getLinearVelocity().y < 0 && previousState == State.JUMPING)) return State.JUMPING;
         if(body.getLinearVelocity().y < 0) return State.FALLING;
         if(body.getLinearVelocity().x <= 1.9){

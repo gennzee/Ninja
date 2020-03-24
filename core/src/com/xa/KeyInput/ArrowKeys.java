@@ -23,7 +23,8 @@ public class ArrowKeys {
 
     private Viewport viewport;
     private Stage stage;
-    private boolean isPressUp, isPressDown, isPressRight, isPressLeft, isPressLeftUp, isPressLeftDown,isPressRightUp,isPressRightDown, isPressMiddle, isPressJump;
+    private boolean isPressUp, isPressDown, isPressRight, isPressLeft,
+            isPressLeftUp, isPressLeftDown,isPressRightUp,isPressRightDown, isPressMiddle, isPressJump, isPressAttack;
 
     public ArrowKeys(SpriteBatch spriteBatch, GamePlay game){
         this.game = game;
@@ -47,6 +48,27 @@ public class ArrowKeys {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 isPressJump = false;
+            }
+
+            @Override
+            public void touchDragged(InputEvent event, float x, float y, int pointer) {
+                super.touchDragged(event, x, y, pointer);
+            }
+        });
+
+        Image imgAttack = new Image(new Texture("stickKeys/attackButton.png"));
+        imgAttack.setColor(1f,1f,1f,.5f);
+        imgAttack.setSize(70,70);
+        imgAttack.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                isPressAttack = true;
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                isPressAttack = false;
             }
 
             @Override
@@ -273,6 +295,12 @@ public class ArrowKeys {
         table2.add(imgJump).size(imgJump.getWidth(), imgJump.getHeight()).expandX();
         table2.pad(5,5,5,5);
         stage.addActor(table2);
+
+        Table table3 = new Table();
+        table3.setPosition(680,50);
+        table3.add(imgAttack).size(imgAttack.getWidth(), imgAttack.getHeight()).expandX();
+        table3.pad(5,5,5,5);
+        stage.addActor(table3);
     }
 
     public void draw(){
