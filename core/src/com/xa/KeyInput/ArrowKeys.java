@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.xa.MainGame;
@@ -308,6 +307,16 @@ public class ArrowKeys {
     }
 
     public void handleInputForJoystick(float delta){
+
+        //for windows
+        if(Gdx.input.isKeyJustPressed(Input.Keys.UP)/* && game.getPlayer().getBody().getLinearVelocity().y == 0*/)
+            game.getPlayer().getBody().applyLinearImpulse(new Vector2(0, 6f), game.getPlayer().getBody().getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT) && game.getPlayer().getBody().getLinearVelocity().x <= 2)
+            game.getPlayer().getBody().applyLinearImpulse(new Vector2(0.1f, 0), game.getPlayer().getBody().getWorldCenter(), true);
+        if(Gdx.input.isKeyPressed(Input.Keys.LEFT) && game.getPlayer().getBody().getLinearVelocity().x >= -2)
+            game.getPlayer().getBody().applyLinearImpulse(new Vector2(-0.1f, 0), game.getPlayer().getBody().getWorldCenter(), true);
+
+        //for android
         if(isPressJump() && game.getPlayer().getBody().getLinearVelocity().y == 0)
             game.getPlayer().getBody().applyLinearImpulse(new Vector2(0, 6f), game.getPlayer().getBody().getWorldCenter(), true);
         if(isPressUp() && game.getPlayer().getBody().getLinearVelocity().y == 0)
@@ -383,5 +392,9 @@ public class ArrowKeys {
 
     public Stage getStage() {
         return stage;
+    }
+
+    public boolean isPressAttack() {
+        return isPressAttack;
     }
 }

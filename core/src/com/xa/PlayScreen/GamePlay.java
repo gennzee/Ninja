@@ -53,14 +53,15 @@ public class GamePlay implements Screen {
         miniMapLoader = new MapLoader("maps/map.tmx", this);
         arrowKeys = new ArrowKeys(game.batch, this);
         textureAtlas = new TextureAtlas("objects/Ninja.pack");
-        player = new Player(mapLoader.getWorld(), this);
+        skillObject = new SkillObject(mapLoader.getWorld(), this);
+        player = new Player(mapLoader.getWorld(), this, skillObject);
         mapLoader.getWorld().setContactListener(new MyContact());
         //hud = new HUD(game.batch);
 
 
         gameCam.position.set(gameViewport.getWorldWidth() / 2, gameViewport.getWorldHeight() / 2, 0);
         miniGameCam.position.set(miniGameViewport.getWorldWidth() / 2, (miniGameViewport.getWorldHeight() / -2f) + getScaleWithPPM(miniGameViewport.getWorldHeight()*10), 0);
-        skillObject = new SkillObject(game.batch);
+
 
     }
 
@@ -80,8 +81,7 @@ public class GamePlay implements Screen {
         //update player
         mapLoader.getWorld().step(1/60f, 10,2);
         miniMapLoader.getWorld().step(1/60f, 10,2);
-        player.update(delta);
-        skillObject.update(delta, player);
+        player.update(delta, arrowKeys);
 
         //moving mini map to anywhere on screen
 //            if(Gdx.input.getX() > miniGameCam.position.x &&  Gdx.input.getX() <= miniGameCam.position.x + miniGameCam.viewportWidth
@@ -123,14 +123,6 @@ public class GamePlay implements Screen {
             gameCam.position.y = gameViewport.getWorldHeight()/2;
         }
 
-//        System.out.println(gameCam.position.x);
-//        System.out.println(gameCam.position.y);
-//        System.out.println(gameViewport.getWorldWidth()/2);
-//        System.out.println(gameViewport.getWorldHeight()/2);
-//        System.out.println(player.getBody().getPosition().x);
-//        System.out.println(player.getBody().getPosition().y);
-//        System.out.println("------------------------");
-
         //update joystick
         arrowKeys.handleInputForJoystick(delta);
 
@@ -159,14 +151,12 @@ public class GamePlay implements Screen {
 
         game.batch.setProjectionMatrix(gameCam.combined);
         game.batch.begin();
-        player.draw(game.batch);
-        skillObject.draw(game.batch);
+        player.render();
         game.batch.end();
 
         game.batch.setProjectionMatrix(miniGameCam.combined);
         game.batch.begin();
-        player.draw(game.batch);
-        skillObject.draw(game.batch);
+        player.render();
         game.batch.end();
 
         //draw joystick

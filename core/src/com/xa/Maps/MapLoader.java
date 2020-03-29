@@ -1,7 +1,5 @@
 package com.xa.Maps;
 
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -13,6 +11,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -57,6 +56,7 @@ public class MapLoader {
         box2DDebugRenderer.setDrawBodies(false);
         BodyDef bodyDef = new BodyDef();
         PolygonShape polygonShape = new PolygonShape();
+        CircleShape circleShape = new CircleShape();
         FixtureDef fixtureDef = new FixtureDef();
         Body body;
 
@@ -68,8 +68,10 @@ public class MapLoader {
             body = world.createBody(bodyDef);
             polygonShape.setAsBox(game.getScaleWithPPM(rect.getWidth() / 2), game.getScaleWithPPM(rect.getHeight() / 2));
             fixtureDef.shape = polygonShape;
+//            circleShape.setRadius(game.getScaleWithPPM(20f));
+//            fixtureDef.shape = circleShape;
             fixtureDef.restitution = 0.001f;
-            body.createFixture(fixtureDef).setUserData(this);
+            body.createFixture(fixtureDef).setUserData("map");
         }
     }
 

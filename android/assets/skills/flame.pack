@@ -5,8 +5,8 @@ filter: Nearest,Nearest
 repeat: none
 flame
   rotate: false
-  xy: 1, 1
-  size: 704, 64
-  orig: 704, 64
+  xy: 0, 0
+  size: 768, 64
+  orig: 768, 64
   offset: 0, 0
   index: -1

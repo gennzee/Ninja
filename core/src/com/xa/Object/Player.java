@@ -1,5 +1,7 @@
 package com.xa.Object;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -10,7 +12,9 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.xa.KeyInput.ArrowKeys;
 import com.xa.PlayScreen.GamePlay;
+import com.xa.Skills.SkillObject;
 
 public class Player extends Sprite {
 
@@ -33,11 +37,13 @@ public class Player extends Sprite {
     private Sprite testSprite;
 
     private TextureRegion playerIdle;
+    private SkillObject skillObject;
 
-    public Player(World world, GamePlay game){
+    public Player(World world, GamePlay game, SkillObject skillObject){
         super(game.getTextureAtlas().findRegion("idle"));
         this.world = world;
         this.game = game;
+        this.skillObject = skillObject;
         currentState = State.STANDING;
         previousState = State.STANDING;
         stateTimer = 0;
@@ -46,7 +52,7 @@ public class Player extends Sprite {
         //standing animation
         Array<TextureRegion> framesArray = new Array<TextureRegion>();
         for(int i = Math.round(925f/32f) ;i<Math.round((32f/32f)+(925f/32f));i++){
-            framesArray.add(new TextureRegion(getTexture(),i*32, 0*64, 32, 64));
+            framesArray.add(new TextureRegion(getTexture(),i*32, 0*64, 32, 68));
         }
         playerStanding = new Animation<>(0.1f, framesArray);
         framesArray.clear();
@@ -54,34 +60,34 @@ public class Player extends Sprite {
 
         //walking animation
         for(int i = Math.round(544f/32f) ;i<((192f/32f)+(544f/32f));i++){
-            framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 64));
+            framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 68));
         }
         playerWalking = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
         //running animation
         for(int i = Math.round(352f/32f) ;i<((192f/32f)+(352f/32f));i++){
-            framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 64));
+            framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 68));
         }
         playerRunning = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
         //jumping animation
         for(int i = Math.round(736f/32f) ;i<Math.round((96f/32f)+(736f/32f));i++){
-            framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 64));
+            framesArray.add(new TextureRegion(getTexture(), i*32, 0*64, 32, 68));
         }
         playerJumping = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
         //falling animation
         for(int i = Math.round(832f/32f) ;i<Math.round((93f/32f)+(832f/32f));i++){
-            framesArray.add(new TextureRegion(getTexture(), i*32, 0*48, 32, 64));
+            framesArray.add(new TextureRegion(getTexture(), i*32, 0*48, 32, 68));
         }
         playerFalling = new Animation<>(0.1f, framesArray);
         framesArray.clear();
 
 
-        setBounds(0, 0, game.getScaleWithPPM(32), game.getScaleWithPPM(64));
+        setBounds(0, 0, game.getScaleWithPPM(32), game.getScaleWithPPM(68));
         drawNinjaPlayer();
     }
 
@@ -97,13 +103,32 @@ public class Player extends Sprite {
         polygonShape.setAsBox(game.getScaleWithPPM(13), game.getScaleWithPPM(25));
         fixtureDef.shape = polygonShape;
 
-        body.createFixture(fixtureDef).setUserData(this);
+        body.createFixture(fixtureDef).setUserData("player");
     }
 
-    public void update(float delta){
+    public void update(float delta, ArrowKeys arrowKeys){
         setPosition(body.getPosition().x -getWidth() / 2, body.getPosition().y - getHeight() / 2);
         setRegion(getFrame(delta));
+        //update skill object
+        if(Gdx.input.isKeyJustPressed(Input.Keys.C) || arrowKeys.isPressAttack()) {
+            if(this.isRunningRight()){
+                skillObject.setSkillOnRight(true);
+            }
+            skillObject.setAttacking(true);
+            skillObject.setSkillPositionXWhenActive(this.getBody().getPosition().x);
+            skillObject.setSkillPositionYWhenActive(this.getBody().getPosition().y);
+        }
+        skillObject.update(delta, this);
     }
+
+    public void render(){
+        this.draw(game.getGame().batch);
+        //draw skill object
+        if(skillObject.isAttacking()) {
+            skillObject.draw(game.getGame().batch);
+        }
+    }
+
 
     public TextureRegion getFrame(float delta){
         currentState = getState();
@@ -172,5 +197,13 @@ public class Player extends Sprite {
 
     public void setBody(Body body) {
         this.body = body;
+    }
+
+    public boolean isRunningRight() {
+        return isRunningRight;
+    }
+
+    public void setRunningRight(boolean runningRight) {
+        isRunningRight = runningRight;
     }
 }
